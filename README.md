@@ -8,18 +8,18 @@
 </div>
 <br>
 
-# fish-cd
+# cd
 
 Plugin for [Oh My Fish][omf-link].
 
-fish-cd provides a new `cd` command to help you change the current working directory fast. It's a proxy directive of the buildin `cd` command with an alise of going to the upper directory.
+Package cd provides a new `cd` command to help you change the current working directory fast. It's a proxy directive of the buildin `cd` command with an alise of going to the upper directory.
 
 I used to enjoy this feature all the time in zsh. I don't see any reason my dear fish should not have it.
 
 ## Install
 
 ```fish
-$ omf install fish-cd
+$ omf install cd
 ```
 
 
@@ -33,7 +33,7 @@ $ cd .../foo/.../bar   # <=> cd ../../foo/../../bar
 
 # License
 
-[MIT][mit] © [Jianming Qu]
+[MIT][mit] © [Jianming Qu](https://jmqu.tech)
 
 
 [mit]:            http://opensource.org/licenses/MIT
@@ -41,5 +41,5 @@ $ cd .../foo/.../bar   # <=> cd ../../foo/../../bar
 [omf-link]:       https://www.github.com/oh-my-fish/oh-my-fish
 
 [license-badge]:  https://img.shields.io/badge/license-MIT-007EC7.svg?style=flat-square
-[travis-badge]:   http://img.shields.io/travis/sancoder-q/fish-cd.svg?style=flat-square
-[travis-link]:    https://travis-ci.org/sancoder-q/fish-cd
+[travis-badge]:   http://img.shields.io/travis/sancoder-q/plugin-cd.svg?style=flat-square
+[travis-link]:    https://travis-ci.org/sancoder-q/plugin-cd
