@@ -3,7 +3,7 @@
 #
 # Description
 #   cd changes the current working directory. It's a proxy directive of the buildin
-#   cd command with an alise of going to the upper directory.
+#   cd command with an alias of going to the upper directory.
 #
 # Examples
 #   cd .../foo <=> cd ../../foo
