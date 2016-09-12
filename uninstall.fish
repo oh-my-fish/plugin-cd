@@ -1,0 +1,1 @@
+functions -e cd

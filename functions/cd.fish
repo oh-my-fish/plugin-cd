@@ -10,13 +10,11 @@
 #   cd ... <=> cd ../..
 #   cd .../foo/.../bar <=> cd ../../foo/../../bar
 
-function init --on-event init_cd
-  function cd -a directory
-    if test -n "$directory"
+function cd -d "plugin-cd" -a directory
+  if test -n "$directory"
       set -l directory (echo $directory | sed -e 's@^.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
       builtin cd $directory
     else
       builtin cd
     end
-  end
 end
