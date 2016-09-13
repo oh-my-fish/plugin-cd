@@ -11,10 +11,25 @@
 #   cd .../foo/.../bar <=> cd ../../foo/../../bar
 
 function cd -d "plugin-cd" -a directory
+  
+  set -l TMP_OLDPWD (pwd)
+  
   if test -n "$directory"
-      set -l directory (echo $directory | sed -e 's@^.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
-      builtin cd $directory
+    if test -n "$OLDPWD" -a $directory = "-"
+      builtin cd $OLDPWD
+      set -xg OLDPWD $TMP_OLDPWD
     else
-      builtin cd
+      set -l directory (echo $directory | sed -e 's@^.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
+    
+      builtin cd $directory
+      if test $TMP_OLDPWD != (pwd)
+        set -xg OLDPWD $TMP_OLDPWD
+      end
     end
+  else
+    builtin cd
+    if test $TMP_OLDPWD != "$HOME"
+      set -xg OLDPWD $TMP_OLDPWD
+    end
+  end
 end
