@@ -5,6 +5,12 @@
 #   cd changes the current working directory. It's a proxy directive of the buildin
 #   cd command with an alias of going to the upper directory.
 #
+# Usage
+#   cd - # return to the last directory
+#   cd -1 # equal to cd -
+#   cd -2 # navigate to the second top directory from dirstack
+#   cd +2 # navigate to the second bottom directory from dirstack
+#
 # Examples
 #   cd .../foo <=> cd ../../foo
 #   cd ... <=> cd ../..

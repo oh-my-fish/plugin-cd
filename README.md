@@ -31,6 +31,24 @@ $ cd ...               # <=> cd ../..
 $ cd .../foo/.../bar   # <=> cd ../../foo/../../bar
 ```
 
+```fish
+$ cd                   # ~
+$ cd ~/foo             # ~/foo
+$ cd ~/bar             # ~/bar
+$ cd -                 # ~/foo ;; ( Equal to `cd -1` )
+```
+
+```fish
+$ pwd                  # ~/a
+$ cd ~/b               # ~/b ;; ( dirstack: a )
+$ cd ~/c               # ~/c ;; ( dirstack: b a )
+$ cd ~/d               # ~/d ;; ( dirstack: c b a )
+$ cd -2                # ~/b ;; ( dirstack: d c a )
+$ cd +1                # ~/c ;; ( dirstack: b d a )
+$ cd +0                # ~/a ;; ( dirstack: c b d )
+$ cd -0                # ~/a ;; ( dirstack: c b d )
+```
+
 # License
 
 [MIT][mit] © [Jianming Qu](https://jmqu.tech)
