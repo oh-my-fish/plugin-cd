@@ -26,7 +26,7 @@ function cd -d "plugin-cd" -a fancy_path
     set -l output_status $status
 
     __update_pwd
-    
+
     return $output_status
   end
 
@@ -41,14 +41,29 @@ function cd -d "plugin-cd" -a fancy_path
     return $output_status
   end
 
+  function __update_dirstack -S
+    if contains $old_pwd $dirstack
+      # If the from directory is existed in stack, remove it
+      set -e dirstack[(contains -i $old_pwd $dirstack)]
+    end
+    # Add the from directory to the head of stack
+    set -g dirstack $old_pwd $dirstack
+
+    if contains (command pwd) $dirstack
+      # If the to directory is existed in stack, remove it
+      set -e dirstack[(contains -i (command pwd) $dirstack)]
+    end
+  end
+  
   function __update_pwd -S
-    if test $old_path != (pwd)
-      set -xg OLDPWD $old_path      
+    if test $old_pwd != (command pwd)
+      set -xg OLDPWD $old_pwd
+      __update_dirstack
     end
   end
 
   # body:
-  set -l old_path (pwd)
+  set -l old_pwd (pwd)
 
   switch "$fancy_path"
     case ''
