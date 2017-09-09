@@ -16,9 +16,8 @@ function cd -d "plugin-cd" -a fancy_path
     builtin cd
     set -l output_status $status
 
-    if test $old_path != (pwd)
-      set -xg OLDPWD $old_path      
-    end
+    __update_pwd
+
     return $output_status
   end
 
@@ -26,9 +25,8 @@ function cd -d "plugin-cd" -a fancy_path
     builtin cd $OLDPWD
     set -l output_status $status
 
-    if test $old_path != (pwd)
-      set -xg OLDPWD $old_path      
-    end
+    __update_pwd
+    
     return $output_status
   end
 
@@ -38,10 +36,15 @@ function cd -d "plugin-cd" -a fancy_path
     builtin cd $normal_path
     set -l output_status $status
 
+    __update_pwd
+    
+    return $output_status
+  end
+
+  function __update_pwd -S
     if test $old_path != (pwd)
       set -xg OLDPWD $old_path      
     end
-    return $output_status
   end
 
   # body:
