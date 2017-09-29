@@ -114,6 +114,5 @@ function cd -d "plugin-cd" -a fancy_path
       __hyphen_cd
     case '*'
       __fancy_cd
-      return 1
   end
 end

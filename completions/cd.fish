@@ -11,10 +11,7 @@ function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
     if test -e $resolved_path; and not test -d $resolved_path
       return
     else
-      set -l path_test $resolved_path*
-      if test -n "$path_test"
-        printf "%s\n" (command ls -adp "$resolved_path"* | sed 's|.*/\([^/]*.\)$|\1|' | sed "s|^|$base|")
-      end
+      printf "%s\n" (command ls -adp "$resolved_path"* | sed 's|.*/\([^/]*.\)$|\1|' | sed "s|^|$base|")
     end
   end
 end
