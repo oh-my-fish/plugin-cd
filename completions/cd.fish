@@ -7,11 +7,12 @@ function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
     set -l base (echo $token | rev | cut -d/ -s -f2- | rev )
     test -n $base; and set -l base $base/
     set -l resolved_path (echo $token | sed -e 's@^\.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
-    
-    if test -e $resolved_path; and not test -d $resolved_path
+    if test -e $resolved_path;
       return
+    else if test $resolved_path = '~'
+      printf "/\n"
     else
-      printf "%s\n" (command ls -adp "$resolved_path"* | sed 's|.*/\([^/]*.\)$|\1|' | sed "s|^|$base|")
+      printf "%s\n" (command ls -adp $resolved_path'*' 2>/dev/null | sed 's|.*/\([^/]*.\)$|\1|' | sed "s|^|$base|")
     end
   end
 end
