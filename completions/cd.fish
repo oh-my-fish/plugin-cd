@@ -32,9 +32,17 @@ function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
     echo $argv | rev | cut -d/ -f1 | rev
   end
 
+  function __filter_directory
+    while read -l __name
+      if test -d "$argv/$__name"
+        echo "$__name/"
+      end
+    end
+  end
+  
   function __list_and_filter
     if test -d $argv[1]
-      command ls -ap $argv[1] | grep -e '/$' | grep -e (echo $argv[2] | sed -e 's@\.@\\\.@' -e 's@^@\^@')
+      command ls -a $argv[1] | __filter_directory $argv[1] | grep -e (echo $argv[2] | sed -e 's@\.@\\\.@' -e 's@^@\^@')
     end
   end
 
