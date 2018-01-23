@@ -1,0 +1,5 @@
+#!/usr/local/bin/fish
+
+set -l SOURCE_DIR (cd ( dirname (status --current-filename) ); and pwd)
+
+eval $SOURCE_DIR/../test/cd.completion.fish

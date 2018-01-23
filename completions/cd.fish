@@ -1,5 +1,4 @@
-function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
-
+function __complete_omf_cd
   function __resolve_dot_path
     echo $argv |                                                   \
       sed -e 's@^\.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' \
@@ -42,11 +41,12 @@ function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
   
   function __list_and_filter
     if test -d $argv[1]
-      command ls -a $argv[1] | __filter_directory $argv[1] | grep -e (echo $argv[2] | sed -e 's@\.@\\\.@' -e 's@^@\^@')
+      command ls -a $argv[1] | __filter_directory $argv[1] | grep -e (echo $argv[2] | sed -e 's@\.@\\\.@g' -e 's@^@\^@')
     end
   end
 
   function __list_all
+    
     set -l __basepath (__get_basepath $argv)
     set -l __filename (__get_filename $argv)
 
@@ -61,28 +61,41 @@ function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
     end
 
     for __c in $__candidate
-      if test "$__c" = './'; and test -n "$__filename"
-        echo ''
-      else if test "$__c" = '../'; or test "$__c" = './'
+      if test "$__c" = './'; or test "$__c" = '../'
+      else if test -z "$__c"
       else
         echo $__c
       end
     end
   end
 
-  # Start
-	set -l token (commandline -ct)
+  set -l token $argv
+
+  if test "$token" = "~"
+    echo "~/"
+    return 0
+  end
+  
   set -l basepath (__get_basepath $token)
   set -l resolved_path (__resolve_fancy_path $token)
-  if string match -qr '\.{2,}$' "$token"
-    printf "$token/%s\n" (__list_all $resolved_path | uniq)
-  else if test -z "$basepath"
-    printf "%s\n" (__list_all $resolved_path | uniq)
-  else if test "$basepath" = '/'
-    printf "/%s\n" (__list_all $resolved_path | uniq)
-  else
-    printf "$basepath/%s\n" (__list_all $resolved_path | uniq)
+  
+  if test -d $resolved_path; and string match -qr '[^/]$' $resolved_path
+    echo "$token/"
   end
+  
+  if test -z "$basepath"
+    __list_all $resolved_path | uniq
+  else if test "$basepath" = '/'
+    __list_all $resolved_path | uniq | sed "s@^@/@"
+  else
+    __list_all $resolved_path | uniq | sed "s@^@$basepath/@"
+  end
+end
+
+function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
+  # Start
+	set -l token (commandline -ct)
+  __complete_omf_cd $token
 end
 
 complete -c cd -e
