@@ -57,6 +57,7 @@ function __complete_omf_cd
     end
 
     if test -n "$CDPATH"; and test -d "$CDPATH"
+      echo "$CDPATH~~~~~~~~~" >> /tmp/cd.log
       set __candidate $__candidate (__list_and_filter "$CDPATH/$__basepath" $__filename)
     end
 
@@ -84,11 +85,11 @@ function __complete_omf_cd
   end
   
   if test -z "$basepath"
-    __list_all $resolved_path | uniq
+    __list_all $resolved_path | sort -u
   else if test "$basepath" = '/'
-    __list_all $resolved_path | uniq | sed "s@^@/@"
+    __list_all $resolved_path | sed "s@^@/@" | sort -u
   else
-    __list_all $resolved_path | uniq | sed "s@^@$basepath/@"
+    __list_all $resolved_path | sed "s@^@$basepath/@" | sort -u
   end
 end
 
