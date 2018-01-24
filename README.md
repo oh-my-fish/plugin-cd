@@ -12,9 +12,13 @@
 
 Plugin for [Oh My Fish][omf-link].
 
-Package cd provides a new `cd` command to help you change the current working directory fast. It's a proxy directive of the buildin `cd` command with an alias of going to the upper directory.
+Package cd provides a new `cd` command to help you change the current working directory fast. It's a wrapper directive of the buildin `cd` command with many useful features and powerful completions.
 
-I used to enjoy this feature all the time in zsh. I don't see there is any reason for my dear fish not having it.
+## Features:
+
+- Multi-dot navigation: `cd ....`
+- Plus / minus navigation: `cd -` `cd -3` `cd +2`
+- Full `$CDPATH` support
 
 ## Install
 
