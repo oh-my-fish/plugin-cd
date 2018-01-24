@@ -5,7 +5,7 @@ set _test_path /tmp/omf-cd
 
 function before
   mkdir -p "$_test_path"
-  mkdir -p "$_test_path/.a"
+  mkdir -p "$_test_path/.a/tm_start_folder"
   mkdir -p "$_test_path/a"
   mkdir -p "$_test_path/b"
   mkdir -p "$_test_path/b/b"
@@ -22,7 +22,7 @@ end
 
 function after
   set -e HOME
-  rm -rf $_test_path
+#  rm -rf $_test_path
 end
 
 function suite_relative_path
@@ -157,12 +157,36 @@ function suite_with_cdpath
     assert_equal ".a/ a/ b/ c/" $subject
   end
 
+  function test_single_cdpath_with_root_should_not_return_directories_in_cdpath
+    cd $_test_path
+    set -g CDPATH "$_test_path/.a"
+    set -l subject (__complete_omf_cd "/tm")
+    set -e CDPATH
+    assert (not contains '/tm_start_folder/' $subject)
+  end
+
   function test_multiple_cdpath_should_return_correct_directories
     cd $_test_path
     set -g CDPATH "$_test_path/b" "$_test_path/c/~"
     set -l subject (__complete_omf_cd "")
     set -e CDPATH
     assert_equal ".a/ a/ b/ b1/ b2/ c/ h1/ h2/" $subject
+  end
+
+  function test_multiple_cdpath_include_swung_should_return_correct_directories
+    cd $_test_path
+    set -g CDPATH "$_test_path/b" "~"
+    set -l subject (__complete_omf_cd "")
+    set -e CDPATH
+    assert_equal ".a/ a/ b/ b1/ b2/ c/ h1/ h2/" $subject
+  end
+
+  function test_multiple_cdpath_with_path_should_return_correct_directories
+    cd $_test_path
+    set -g CDPATH "$_test_path/b" "$_test_path/c/~"
+    set -l subject (__complete_omf_cd "b")
+    set -e CDPATH
+    assert_equal "b/ b1/ b2/" $subject
   end
 end
 

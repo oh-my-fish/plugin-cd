@@ -45,7 +45,7 @@ function __complete_omf_cd
     end
   end
 
-  function __list_all
+  function __list_all_candidate
     
     set -l __basepath (__get_basepath $argv)
     set -l __filename (__get_filename $argv)
@@ -58,8 +58,11 @@ function __complete_omf_cd
 
     if test -n "$CDPATH"
       for cdpath in $CDPATH
-        if test -d $cdpath
-          set __candidate $__candidate (__list_and_filter "$cdpath/$__basepath" $__filename)
+        if not string match -qr '^/' $argv
+          set -l resolved_cdpath (__resolve_home_path $cdpath)
+          if test -d $resolved_cdpath
+            set __candidate $__candidate (__list_and_filter "$resolved_cdpath/$__basepath" $__filename)
+          end
         end
       end
     end
@@ -73,27 +76,32 @@ function __complete_omf_cd
     end
   end
 
-  set -l token $argv
+  function __list_all
+    
+    set -l token $argv
 
-  if test "$token" = "~"
-    echo "~/"
-    return 0
+    if test "$token" = "~"
+      echo "~/"
+      return 0
+    end
+    
+    set -l basepath (__get_basepath $token)
+    set -l resolved_path (__resolve_fancy_path $token)
+    
+    if test -d $resolved_path; and string match -qr '[^/]$' $resolved_path
+      echo "$token/"
+    end
+
+    if test -z "$basepath"
+      __list_all_candidate $resolved_path
+    else if test "$basepath" = '/'
+      __list_all_candidate $resolved_path | sed "s@^@/@"
+    else
+      __list_all_candidate $resolved_path | sed "s@^@$basepath/@"
+    end
   end
-  
-  set -l basepath (__get_basepath $token)
-  set -l resolved_path (__resolve_fancy_path $token)
-  
-  if test -d $resolved_path; and string match -qr '[^/]$' $resolved_path
-    echo "$token/"
-  end
-  
-  if test -z "$basepath"
-    __list_all $resolved_path | sort -u
-  else if test "$basepath" = '/'
-    __list_all $resolved_path | sed "s@^@/@" | sort -u
-  else
-    __list_all $resolved_path | sed "s@^@$basepath/@" | sort -u
-  end
+
+  __list_all $argv | sort -u
 end
 
 function __fish_complete_plugin_cd -d "Completions for the plugin-cd command"
