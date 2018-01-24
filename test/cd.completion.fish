@@ -133,7 +133,7 @@ function suite_absolute_path
 end
 
 function suite_with_cdpath
-  function test_cdpath_different_with_current_should_return_merged_directories
+  function test_single_cdpath_different_with_current_should_return_merged_directories
     cd $_test_path
     set -g CDPATH "$_test_path/b"
     set -l subject (__complete_omf_cd "")
@@ -141,7 +141,7 @@ function suite_with_cdpath
     assert_equal ".a/ a/ b/ b1/ b2/ c/" $subject
   end
 
-  function test_cdpath_with_slash_should_not_make_differences
+  function test_single_cdpath_with_slash_should_not_make_differences
     cd $_test_path
     set -g CDPATH "$_test_path/b/"
     set -l subject (__complete_omf_cd "")
@@ -149,13 +149,20 @@ function suite_with_cdpath
     assert_equal ".a/ a/ b/ b1/ b2/ c/" $subject
   end
 
-  
-  function test_cdpath_same_with_current_should_return_current_directories
+  function test_single_cdpath_same_with_current_should_return_current_directories
     cd $_test_path
     set -g CDPATH "$_test_path"
     set -l subject (__complete_omf_cd "")
     set -e CDPATH
     assert_equal ".a/ a/ b/ c/" $subject
+  end
+
+  function test_multiple_cdpath_should_return_correct_directories
+    cd $_test_path
+    set -g CDPATH "$_test_path/b" "$_test_path/c/~"
+    set -l subject (__complete_omf_cd "")
+    set -e CDPATH
+    assert_equal ".a/ a/ b/ b1/ b2/ c/ h1/ h2/" $subject
   end
 end
 

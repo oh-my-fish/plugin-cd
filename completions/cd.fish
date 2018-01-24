@@ -56,9 +56,12 @@ function __complete_omf_cd
       set __candidate (__list_and_filter . $__filename)
     end
 
-    if test -n "$CDPATH"; and test -d "$CDPATH"
-      echo "$CDPATH~~~~~~~~~" >> /tmp/cd.log
-      set __candidate $__candidate (__list_and_filter "$CDPATH/$__basepath" $__filename)
+    if test -n "$CDPATH"
+      for cdpath in $CDPATH
+        if test -d $cdpath
+          set __candidate $__candidate (__list_and_filter "$cdpath/$__basepath" $__filename)
+        end
+      end
     end
 
     for __c in $__candidate
