@@ -22,7 +22,7 @@ end
 
 function after
   set -e HOME
-#  rm -rf $_test_path
+  rm -rf $_test_path
 end
 
 function suite_relative_path
