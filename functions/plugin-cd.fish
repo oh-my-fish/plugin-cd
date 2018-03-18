@@ -16,10 +16,18 @@
 #   cd ... <=> cd ../..
 #   cd .../foo/.../bar <=> cd ../../foo/../../bar
 
-function cd -d "plugin-cd" -a fancy_path
+function __fish_cd
+  if functions -q __wrapped_cd
+    __wrapped_cd $argv
+  else
+    builtin cd $argv
+  end
+end
+
+function __plugin_cd -d "plugin-cd" -a fancy_path
   # private:
   function __empty_cd -S
-    builtin cd
+    __fish_cd
     set -l output_status $status
 
     __update_pwd
@@ -28,7 +36,7 @@ function cd -d "plugin-cd" -a fancy_path
   end
 
   function __hyphen_cd -S
-    builtin cd $OLDPWD
+    __fish_cd $OLDPWD
     set -l output_status $status
 
     __update_pwd
@@ -64,7 +72,7 @@ function cd -d "plugin-cd" -a fancy_path
 
 			  # now reconstruct dirstack and change directory
 			  set -g dirstack $stack[2..(count $stack)]
-        builtin cd $stack[1]
+        __fish_cd $stack[1]
         set -l output_status $status
         
         __update_pwd
@@ -74,7 +82,7 @@ function cd -d "plugin-cd" -a fancy_path
     else 
       set -l normal_path (echo $fancy_path | sed -e 's@^\.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
 
-      builtin cd $normal_path
+      __fish_cd $normal_path
       set -l output_status $status
 
       __update_pwd
