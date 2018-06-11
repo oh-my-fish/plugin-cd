@@ -1,9 +1,15 @@
 #!/usr/local/bin/fish
 
-set SOURCE_DIR (dirname (status -f))
+set SOURCE_FILE (status -f)
+# For fishman symlink
+while test -L $SOURCE_FILE
+  set SOURCE_FILE (readlink $SOURCE_FILE)
+end
 
-if not functions -q __wrapped_cd
-  functions -c cd __wrapped_cd
+set SOURCE_DIR (dirname $SOURCE_FILE)
+
+if not functions -q __plugin_cd_wrapped_cd
+  functions -c cd __plugin_cd_wrapped_cd
   functions -e cd
 end
 
@@ -12,5 +18,3 @@ if not functions -q __plugin_cd
 end
 
 functions -c __plugin_cd cd
-
-
