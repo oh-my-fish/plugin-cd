@@ -1,5 +1,3 @@
-#!/usr/local/bin/fish
-
 functions -e cd
 
 if functions -q __wrapped_cd

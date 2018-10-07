@@ -1,5 +1,3 @@
-#!/usr/local/bin/fish
-
 set SOURCE_FILE (status -f)
 # For fishman symlink
 while test -L $SOURCE_FILE
