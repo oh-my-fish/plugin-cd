@@ -16,14 +16,6 @@
 #   cd ... <=> cd ../..
 #   cd .../foo/.../bar <=> cd ../../foo/../../bar
 
-function __fish_cd
-  if functions -q __wrapped_cd
-    __wrapped_cd $argv
-  else
-    builtin cd $argv
-  end
-end
-
 function __plugin_cd -d "plugin-cd" -a fancy_path
   # private:
   function __empty_cd -S
@@ -31,7 +23,7 @@ function __plugin_cd -d "plugin-cd" -a fancy_path
     set -l output_status $status
 
     __update_pwd
-    
+
     return $output_status
   end
 
@@ -40,14 +32,14 @@ function __plugin_cd -d "plugin-cd" -a fancy_path
     set -l output_status $status
 
     __update_pwd
-    
+
     return $output_status
   end
 
   function __fancy_cd -S
 		set extract_from_right (echo $fancy_path | sed -n '/^+\([0-9]\)$/  s//\1/g p')
 		set extract_from_left (echo $fancy_path | sed -n '/^-\([0-9]\)$/  s//\1/g p')
-    
+
 	  if test -n "$extract_from_right" -o -n "$extract_from_left"
 		  # Generate current stack
 		  set -l stack (command pwd) $dirstack
@@ -74,19 +66,19 @@ function __plugin_cd -d "plugin-cd" -a fancy_path
 			  set -g dirstack $stack[2..(count $stack)]
         __fish_cd $stack[1]
         set -l output_status $status
-        
+
         __update_pwd
 
         return $output_status
 		  end
-    else 
+    else
       set -l normal_path (echo $fancy_path | sed -e 's@^\.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
 
       __fish_cd $normal_path
       set -l output_status $status
 
       __update_pwd
-      
+
       return $output_status
     end
   end
@@ -104,7 +96,7 @@ function __plugin_cd -d "plugin-cd" -a fancy_path
         set -e dirstack[(contains -i (command pwd) $dirstack)]
       end
   end
-  
+
   function __update_pwd -S
     if test $old_pwd != (command pwd)
       set -xg OLDPWD $old_pwd
