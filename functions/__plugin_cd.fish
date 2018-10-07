@@ -46,8 +46,8 @@ function __plugin_cd -d "plugin-cd" -a fancy_path
   end
 
   function __fancy_cd -S
-    set extract_from_right (echo $fancy_path | sed -n '/^+\([0-9]\)$/  s//\1/g p')
-    set extract_from_left (echo $fancy_path | sed -n '/^-\([0-9]\)$/  s//\1/g p')
+    set extract_from_right (echo $fancy_path | sed -n 's/^+\([0-9]*\)$/\1/g p')
+    set extract_from_left (echo $fancy_path | sed -n 's/^-\([0-9]*\)$/\1/g p')
 
     if test -n "$extract_from_right" -o -n "$extract_from_left"
       # Generate current stack
