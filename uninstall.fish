@@ -5,4 +5,4 @@ if functions -q __wrapped_cd
   functions -e __wrapped_cd
 end
 
-functions -e __fish_cd __plugin_cd
+functions -e __plugin_cd

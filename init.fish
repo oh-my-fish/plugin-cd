@@ -1,7 +1,7 @@
 set SOURCE_DIR (dirname (status -f))
 
-if not functions -q __plugin_cd_wrapped_cd
-  functions -c cd __plugin_cd_wrapped_cd
+if not functions -q __wrapped_cd
+  functions -c cd __wrapped_cd
   functions -e cd
 end
 

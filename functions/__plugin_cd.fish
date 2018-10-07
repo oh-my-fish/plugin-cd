@@ -17,7 +17,16 @@
 #   cd .../foo/.../bar <=> cd ../../foo/../../bar
 
 function __plugin_cd -d "plugin-cd" -a fancy_path
+
   # private:
+  function __fish_cd
+    if functions -q __wrapped_cd
+      __wrapped_cd $argv
+    else
+      builtin cd $argv
+    end
+  end
+
   function __empty_cd -S
     __fish_cd
     set -l output_status $status
@@ -37,40 +46,40 @@ function __plugin_cd -d "plugin-cd" -a fancy_path
   end
 
   function __fancy_cd -S
-		set extract_from_right (echo $fancy_path | sed -n '/^+\([0-9]\)$/  s//\1/g p')
-		set extract_from_left (echo $fancy_path | sed -n '/^-\([0-9]\)$/  s//\1/g p')
+    set extract_from_right (echo $fancy_path | sed -n '/^+\([0-9]\)$/  s//\1/g p')
+    set extract_from_left (echo $fancy_path | sed -n '/^-\([0-9]\)$/  s//\1/g p')
 
-	  if test -n "$extract_from_right" -o -n "$extract_from_left"
-		  # Generate current stack
-		  set -l stack (command pwd) $dirstack
+    if test -n "$extract_from_right" -o -n "$extract_from_left"
+      # Generate current stack
+      set -l stack (command pwd) $dirstack
 
-		  if test -n "$extract_from_right"
-			  if test $extract_from_right -gt (math (count $stack) - 1)
-				  echo "no such entry in dir stack"
-				  return 1
-			  end
+      if test -n "$extract_from_right"
+        if test $extract_from_right -gt (math (count $stack) - 1)
+          echo "no such entry in dir stack"
+          return 1
+        end
 
-			  set extract_from_left (math (count $stack) - 1 - $extract_from_right)
-		  end
+        set extract_from_left (math (count $stack) - 1 - $extract_from_right)
+      end
 
-		  if test $extract_from_left -gt (math (count $stack) - 1)
-			  echo "no such entry in dir stack"
-			  return 1
-		  else
-			  if test $extract_from_left -gt 0
+      if test $extract_from_left -gt (math (count $stack) - 1)
+        echo "no such entry in dir stack"
+        return 1
+      else
+        if test $extract_from_left -gt 0
           set stack $stack[(math $extract_from_left + 1)] $stack
           set -e stack[(math $extract_from_left + 2)]
-			  end
+        end
 
-			  # now reconstruct dirstack and change directory
-			  set -g dirstack $stack[2..(count $stack)]
+        # now reconstruct dirstack and change directory
+        set -g dirstack $stack[2..(count $stack)]
         __fish_cd $stack[1]
         set -l output_status $status
 
         __update_pwd
 
         return $output_status
-		  end
+      end
     else
       set -l normal_path (echo $fancy_path | sed -e 's@^\.$@:@;s@^\.\([^\.]\)@:\1@g;s@\([^\.]\)\.$@\1:@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\([^\.]\)\.\([^\.]\)@\1:\2@g' -e 's@\.\{2\}\(\.*\)@::\1@g' -e 's@\.@\/\.\.@g' -e 's@:@\.@g')
 
