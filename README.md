@@ -12,7 +12,7 @@
 
 Plugin for [Oh My Fish][omf-link].
 
-Package cd provides a new `cd` command to help you change the current working directory fast. It's a wrapper directive of the buildin `cd` command with many useful features and powerful completions.
+Package cd provides a new `cd` command to help you change the current working directory fast. It's a wrapper directive of the built-in `cd` command with many useful features and powerful completions.
 
 ## Features:
 
